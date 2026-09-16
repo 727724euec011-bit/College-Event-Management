@@ -2,28 +2,35 @@ import { useEffect, useState } from "react";
 import API from "../api";
 
 function Events() {
-    const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("events-cache") || "[]");
+        } catch {
+            return [];
+        }
+    });
     const [search, setSearch] = useState("");
-
-    useEffect(() => {
-        getEvents();
-    }, []);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isOffline, setIsOffline] = useState(false);
 
     const getEvents = async () => {
         try {
             const res = await API.get("/events");
 
-            console.log("EVENTS DATA:", res.data);
-
             setEvents(res.data);
+            localStorage.setItem("events-cache", JSON.stringify(res.data));
+            setIsOffline(false);
         } catch (error) {
             console.error("EVENTS ERROR:", error);
-            alert(
-                error.response?.data?.message ||
-                "Failed to load events"
-            );
+            setIsOffline(true);
+        } finally {
+            setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        getEvents();
+    }, []);
 
     const registerEvent = async (eventId) => {
         try {
@@ -59,6 +66,12 @@ function Events() {
 
             <h2>College Events</h2>
 
+            {isOffline && events.length > 0 && (
+                <p className="status-message">
+                    Showing the last saved events. Reconnect the backend to refresh the list.
+                </p>
+            )}
+
             <input
                 className="search"
                 type="text"
@@ -69,7 +82,9 @@ function Events() {
 
             <div className="event-grid">
 
-                {filteredEvents.length === 0 ? (
+                {isLoading && events.length === 0 ? (
+                    <p>Loading events...</p>
+                ) : filteredEvents.length === 0 ? (
                     <p>No events found.</p>
                 ) : (
                     filteredEvents.map((event) => (
