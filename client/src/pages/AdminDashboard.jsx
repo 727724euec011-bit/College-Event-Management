@@ -94,6 +94,7 @@ function AdminDashboard() {
             });
 
             alert("Event deleted successfully!");
+
             getData();
         } catch (error) {
             alert(
@@ -116,7 +117,9 @@ function AdminDashboard() {
 
             await API.put(
                 `/events/${event._id}`,
-                { title: newTitle },
+                {
+                    title: newTitle
+                },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -125,6 +128,7 @@ function AdminDashboard() {
             );
 
             alert("Event updated successfully!");
+
             getData();
         } catch (error) {
             alert(
@@ -151,7 +155,8 @@ function AdminDashboard() {
                     required
                 />
 
-                <br /><br />
+                <br />
+                <br />
 
                 <textarea
                     placeholder="Description"
@@ -160,7 +165,8 @@ function AdminDashboard() {
                     required
                 />
 
-                <br /><br />
+                <br />
+                <br />
 
                 <input
                     type="datetime-local"
@@ -169,7 +175,8 @@ function AdminDashboard() {
                     required
                 />
 
-                <br /><br />
+                <br />
+                <br />
 
                 <input
                     type="text"
@@ -179,7 +186,8 @@ function AdminDashboard() {
                     required
                 />
 
-                <br /><br />
+                <br />
+                <br />
 
                 <input
                     type="text"
@@ -188,7 +196,8 @@ function AdminDashboard() {
                     onChange={(e) => setPoster(e.target.value)}
                 />
 
-                <br /><br />
+                <br />
+                <br />
 
                 <input
                     type="number"
@@ -198,7 +207,8 @@ function AdminDashboard() {
                     required
                 />
 
-                <br /><br />
+                <br />
+                <br />
 
                 <button type="submit">
                     Create Event
@@ -212,68 +222,97 @@ function AdminDashboard() {
 
             <div className="event-grid">
 
-                {events.map((event) => (
-                    <div className="event-card" key={event._id}>
-
-                        {event.poster && (
-                            <img
-                                src={event.poster}
-                                alt={event.title}
-                                className="event-poster"
-                            />
-                        )}
-
-                        <h4>{event.title}</h4>
-
-                        <p>
-                            Date:{" "}
-                            {new Date(event.date).toLocaleDateString()}
-                        </p>
-
-                        <p>Venue: {event.venue}</p>
-
-                        <button
-                            onClick={() => editEvent(event)}
+                {events.length === 0 ? (
+                    <p>No events available.</p>
+                ) : (
+                    events.map((event) => (
+                        <div
+                            className="event-card"
+                            key={event._id}
                         >
-                            Edit
-                        </button>
 
-                        {" "}
+                            {event.poster && (
+                                <img
+                                    src={event.poster}
+                                    alt={event.title}
+                                    className="event-poster"
+                                />
+                            )}
 
-                        <button
-                            onClick={() => deleteEvent(event._id)}
-                        >
-                            Delete
-                        </button>
+                            <h4>{event.title}</h4>
 
-                    </div>
-                ))}
+                            <p>
+                                Date:{" "}
+                                {new Date(
+                                    event.date
+                                ).toLocaleDateString()}
+                            </p>
+
+                            <p>
+                                Venue: {event.venue}
+                            </p>
+
+                            <button
+                                onClick={() =>
+                                    editEvent(event)
+                                }
+                            >
+                                Edit
+                            </button>
+
+                            {" "}
+
+                            <button
+                                onClick={() =>
+                                    deleteEvent(event._id)
+                                }
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+                    ))
+                )}
 
             </div>
 
             <h3>Registered Students</h3>
 
-            {registrations.map((registration) => (
-                <div className="event-card" key={registration._id}>
+            {registrations.length === 0 ? (
+                <p>No registrations found.</p>
+            ) : (
+                registrations.map((registration) => (
+                    <div
+                        className="event-card"
+                        key={registration._id}
+                    >
 
-                    <p>
-                        <b>Student:</b> {registration.userId.name}
-                    </p>
+                        <p>
+                            <b>Student:</b>{" "}
+                            {registration.userId?.name ||
+                                "Unknown Student"}
+                        </p>
 
-                    <p>
-                        <b>Email:</b> {registration.userId.email}
-                    </p>
+                        <p>
+                            <b>Email:</b>{" "}
+                            {registration.userId?.email ||
+                                "Unknown Email"}
+                        </p>
 
-                    <p>
-                        <b>Event:</b> {registration.eventId.title}
-                    </p>
+                        <p>
+                            <b>Event:</b>{" "}
+                            {registration.eventId?.title ||
+                                "Event Deleted"}
+                        </p>
 
-                    <p>
-                        <b>Status:</b> {registration.attendance}
-                    </p>
+                        <p>
+                            <b>Status:</b>{" "}
+                            {registration.attendance}
+                        </p>
 
-                </div>
-            ))}
+                    </div>
+                ))
+            )}
 
         </div>
     );

@@ -12,9 +12,16 @@ function Events() {
     const getEvents = async () => {
         try {
             const res = await API.get("/events");
+
+            console.log("EVENTS DATA:", res.data);
+
             setEvents(res.data);
         } catch (error) {
-            alert("Failed to load events");
+            console.error("EVENTS ERROR:", error);
+            alert(
+                error.response?.data?.message ||
+                "Failed to load events"
+            );
         }
     };
 
@@ -42,7 +49,9 @@ function Events() {
     };
 
     const filteredEvents = events.filter((event) =>
-        event.title.toLowerCase().includes(search.toLowerCase())
+        event.title
+            .toLowerCase()
+            .includes(search.toLowerCase())
     );
 
     return (
@@ -60,46 +69,53 @@ function Events() {
 
             <div className="event-grid">
 
-                {filteredEvents.map((event) => (
-                    <div className="event-card" key={event._id}>
-
-                        {event.poster ? (
-                            <img
-                                src={event.poster}
-                                alt={event.title}
-                                className="event-poster"
-                            />
-                        ) : (
-                            <div className="poster-placeholder">
-                                College Event
-                            </div>
-                        )}
-
-                        <h3>{event.title}</h3>
-
-                        <p>{event.description}</p>
-
-                        <p>
-                            📅 <b>Date:</b>{" "}
-                            {new Date(event.date).toLocaleDateString()}
-                        </p>
-
-                        <p>
-                            📍 <b>Venue:</b> {event.venue}
-                        </p>
-
-                        <p>
-                            👥 <b>Capacity:</b> {event.capacity}
-                        </p>
-
-                        <button
-                            onClick={() => registerEvent(event._id)}
+                {filteredEvents.length === 0 ? (
+                    <p>No events found.</p>
+                ) : (
+                    filteredEvents.map((event) => (
+                        <div
+                            className="event-card"
+                            key={event._id}
                         >
-                            Register
-                        </button>
 
-                    </div>
-                ))}
+                            {event.poster ? (
+                                <img
+                                    src={event.poster}
+                                    alt={event.title}
+                                    className="event-poster"
+                                />
+                            ) : (
+                                <div className="poster-placeholder">
+                                    College Event
+                                </div>
+                            )}
+
+                            <h3>{event.title}</h3>
+
+                            <p>{event.description}</p>
+
+                            <p>
+                                📅 <b>Date:</b>{" "}
+                                {new Date(event.date).toLocaleDateString()}
+                            </p>
+
+                            <p>
+                                📍 <b>Venue:</b> {event.venue}
+                            </p>
+
+                            <p>
+                                👥 <b>Capacity:</b> {event.capacity}
+                            </p>
+
+                            <button
+                                onClick={() => registerEvent(event._id)}
+                            >
+                                Register
+                            </button>
+
+                        </div>
+                    ))
+                )}
 
             </div>
 

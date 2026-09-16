@@ -20,6 +20,7 @@ function MyRegistrations() {
 
             setRegistrations(res.data);
         } catch (error) {
+            console.error(error);
             alert("Failed to load registered events");
         }
     };
@@ -42,26 +43,34 @@ function MyRegistrations() {
                             key={registration._id}
                         >
 
-                            <h3>
-                                {registration.eventId.title}
-                            </h3>
+                            {registration.eventId ? (
+                                <>
+                                    <h3>
+                                        {registration.eventId.title}
+                                    </h3>
 
-                            <p>
-                                📅 <b>Date:</b>{" "}
-                                {new Date(
-                                    registration.eventId.date
-                                ).toLocaleDateString()}
-                            </p>
+                                    <p>
+                                        📅 <b>Date:</b>{" "}
+                                        {new Date(
+                                            registration.eventId.date
+                                        ).toLocaleDateString()}
+                                    </p>
 
-                            <p>
-                                📍 <b>Venue:</b>{" "}
-                                {registration.eventId.venue}
-                            </p>
+                                    <p>
+                                        📍 <b>Venue:</b>{" "}
+                                        {registration.eventId.venue}
+                                    </p>
 
-                            <p>
-                                🎟️ <b>Status:</b>{" "}
-                                {registration.attendance}
-                            </p>
+                                    <p>
+                                        🎟️ <b>Status:</b>{" "}
+                                        {registration.attendance}
+                                    </p>
+                                </>
+                            ) : (
+                                <p>
+                                    Event is no longer available.
+                                </p>
+                            )}
 
                         </div>
                     ))}
