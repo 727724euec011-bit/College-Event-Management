@@ -22,11 +22,11 @@ function App() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        window.location.href = "/";
+        window.location.href = import.meta.env.BASE_URL;
     };
 
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
 
             <nav>
                 <Link to="/events">
