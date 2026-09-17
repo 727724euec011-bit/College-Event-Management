@@ -83,10 +83,26 @@ function AdminDashboard() {
 
             getData();
         } catch (error) {
-            alert(
-                error.response?.data?.message ||
-                "Failed to create event"
+            console.error("CREATE EVENT ERROR:", error);
+
+            const offlineEvent = {
+                _id: `offline-${Date.now()}`,
+                title,
+                description,
+                date,
+                venue,
+                poster,
+                capacity: Number(capacity)
+            };
+
+            const savedEvents = JSON.parse(
+                localStorage.getItem("events-cache") || "[]"
             );
+            const updatedEvents = [...savedEvents, offlineEvent];
+
+            localStorage.setItem("events-cache", JSON.stringify(updatedEvents));
+            setEvents(updatedEvents);
+            alert("Backend unavailable. Event saved in this browser only.");
         }
     };
 
