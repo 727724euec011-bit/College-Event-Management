@@ -34,17 +34,18 @@ function Login() {
 
         } catch (error) {
             if (!error.response) {
+                const isAdmin = email.toLowerCase().includes("admin");
                 const offlineUser = {
                     id: `offline-${email}`,
                     name: email.split("@")[0],
                     email,
-                    role: "student"
+                    role: isAdmin ? "admin" : "student"
                 };
 
                 localStorage.setItem("token", `offline-token-${Date.now()}`);
                 localStorage.setItem("user", JSON.stringify(offlineUser));
                 alert("Backend unavailable. Signed in locally for demo use.");
-                navigate("/events");
+                navigate(isAdmin ? "/admin" : "/events");
                 return;
             }
 
