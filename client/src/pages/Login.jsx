@@ -33,10 +33,22 @@ function Login() {
             }
 
         } catch (error) {
-            alert(
-                error.response?.data?.message ||
-                "Login failed"
-            );
+            if (!error.response) {
+                const offlineUser = {
+                    id: `offline-${email}`,
+                    name: email.split("@")[0],
+                    email,
+                    role: "student"
+                };
+
+                localStorage.setItem("token", `offline-token-${Date.now()}`);
+                localStorage.setItem("user", JSON.stringify(offlineUser));
+                alert("Backend unavailable. Signed in locally for demo use.");
+                navigate("/events");
+                return;
+            }
+
+            alert(error.response.data?.message || "Login failed");
         }
     };
 
