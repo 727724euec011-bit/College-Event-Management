@@ -1,0 +1,20 @@
+[
+  {
+    "_id": "6aaac14f66d741636ab9ac16",
+    "title": "Tech Fest 2026 - Updated",
+    "description": "Updated college technical event with coding and project competitions.",
+    "date": "2026-09-02T16:18:00.000Z",
+    "venue": "Main College Auditorium",
+    "poster": "",
+    "capacity": 132
+  },
+  {
+    "_id": "6aa80b0e99121a2e3a3addbf",
+    "title": "Coding Contest 2026",
+    "description": "A coding competition for college students.",
+    "date": "2026-11-10T04:30:00.000Z",
+    "venue": "Computer Science Lab",
+    "poster": "",
+    "capacity": 50
+  }
+]

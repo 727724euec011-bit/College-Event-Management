@@ -22,7 +22,15 @@ function Events() {
             setIsOffline(false);
         } catch (error) {
             console.error("EVENTS ERROR:", error);
-            setIsOffline(true);
+            try {
+                const fallback = await fetch(`${import.meta.env.BASE_URL}events.json`);
+                const fallbackEvents = await fallback.json();
+                setEvents((currentEvents) => currentEvents.length > 0 ? currentEvents : fallbackEvents);
+                setIsOffline(true);
+            } catch (fallbackError) {
+                console.error("EVENTS FALLBACK ERROR:", fallbackError);
+                setIsOffline(true);
+            }
         } finally {
             setIsLoading(false);
         }
