@@ -56,10 +56,25 @@ function Events() {
 
             alert("Event registration successful!");
         } catch (error) {
-            alert(
-                error.response?.data?.message ||
-                "Registration failed"
+            const event = events.find((item) => item._id === eventId);
+            const savedRegistrations = JSON.parse(
+                localStorage.getItem("registrations-cache") || "[]"
             );
+
+            if (event && !savedRegistrations.some((item) => item.eventId?._id === eventId)) {
+                savedRegistrations.push({
+                    _id: `offline-registration-${Date.now()}`,
+                    eventId: event,
+                    attendance: "Registered locally"
+                });
+                localStorage.setItem(
+                    "registrations-cache",
+                    JSON.stringify(savedRegistrations)
+                );
+                alert("Backend unavailable. Registration saved in this browser only.");
+            } else {
+                alert(error.response?.data?.message || "Registration failed");
+            }
         }
     };
 

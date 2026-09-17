@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import API from "../api";
 
 function MyRegistrations() {
-    const [registrations, setRegistrations] = useState([]);
+    const [registrations, setRegistrations] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("registrations-cache") || "[]");
+        } catch {
+            return [];
+        }
+    });
+    const [isOffline, setIsOffline] = useState(false);
 
     useEffect(() => {
         getMyRegistrations();
@@ -21,7 +28,7 @@ function MyRegistrations() {
             setRegistrations(res.data);
         } catch (error) {
             console.error(error);
-            alert("Failed to load registered events");
+            setIsOffline(true);
         }
     };
 
@@ -29,6 +36,12 @@ function MyRegistrations() {
         <div className="page">
 
             <h2>My Registered Events</h2>
+
+            {isOffline && registrations.length > 0 && (
+                <p className="status-message">
+                    Showing registrations saved in this browser. Reconnect the backend to sync them.
+                </p>
+            )}
 
             {registrations.length === 0 ? (
                 <div className="empty-box">
