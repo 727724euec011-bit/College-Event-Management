@@ -17,28 +17,35 @@ function AdminDashboard() {
     }, []);
 
     const getData = async () => {
+        const token = localStorage.getItem("token");
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+
         try {
-            const token = localStorage.getItem("token");
-
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-
             const eventRes = await API.get("/events");
+            setEvents(eventRes.data);
+        } catch (error) {
+            console.error("ADMIN EVENTS ERROR:", error);
+            try {
+                const fallback = await fetch(`${import.meta.env.BASE_URL}events.json`);
+                setEvents(await fallback.json());
+            } catch (fallbackError) {
+                console.error("ADMIN EVENTS FALLBACK ERROR:", fallbackError);
+            }
+        }
+
+        try {
             const registrationRes = await API.get(
                 "/registrations/all",
                 config
             );
-
-            setEvents(eventRes.data);
             setRegistrations(registrationRes.data);
         } catch (error) {
-            alert(
-                error.response?.data?.message ||
-                "Failed to load dashboard"
-            );
+            console.error("ADMIN REGISTRATIONS ERROR:", error);
+            setRegistrations([]);
         }
     };
 
